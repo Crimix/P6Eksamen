@@ -1,0 +1,245 @@
+\section{Christoffer}
+\subsection{Overview}
+% \begin{frame}{Christoffer}
+% \begin{itemize}
+%   \only<1->{\item This}
+%   \only<2->{\item is}
+%   \only<3->{\item a}
+%   \only<4>{\item test}
+% \end{itemize}
+% \end{frame}
+
+\begin{frame}{Christoffer: Overview}
+\begin{itemize}
+  \item The tasks of our program
+  		\begin{itemize}
+  			\item What is each tasks purpose
+  			\item Key implementation points of each task
+  			\item Why they are implemented as they are  
+		\end{itemize}
+  \item Unit tests
+  		\begin{itemize}
+  			\item How have we unit tested
+  			\item The framework
+  			\item What have we tested
+  			\item The results of the test
+		\end{itemize}
+  \item The final test of the turret
+%   		\begin{enumerate}
+%   			\item 
+% 		\end{enumerate}
+\end{itemize}
+\end{frame}
+
+\subsection{Tasks}
+\begin{frame}{Tasks}
+\begin{itemize}
+  \item Main
+  \item Track
+  \item GetDataAndCalculate
+  \item WaitAndFire
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Main}
+\only<1>{
+\begin{itemize}
+  \item Purpose
+  	\begin{itemize}
+  		\item Start tasks
+  		\item Setup
+  	\end{itemize}
+  \item Key implementation points
+  	\begin{itemize}
+  		\item Setup sensors / camera
+  		\item Start tasks
+	\end{itemize}
+\end{itemize}
+}
+\begin{onlyenv}<2>
+\begin{itemize}
+  \item Key implementation points
+  	\begin{itemize}
+  		\item Setup sensors / camera
+  		\item Start tasks
+	\end{itemize}
+\end{itemize}
+\begin{center}
+\begin{minipage}[H]{0.9\linewidth}
+\begin{lstlisting}
+PosRegEnable(ROTATE_MOTOR);
+PosRegEnable(ANGLE_MOTOR);
+SetMotorRegulationTime(10);
+NXTCam_Init(CAM_PORT, CAM_ADDR);
+NXTCam_SendCommand(CAM_PORT, CAM_ADDR, 'A'); 
+NXTCam_SendCommand(CAM_PORT, CAM_ADDR, 'E');
+SetSensorUltrasonic(SENSOR_LEFT);
+SetSensorUltrasonic(SENSOR_RIGHT);
+Precedes(Track,GetDataAndCalculate);
+\end{lstlisting} 
+\end{minipage}
+\end{center}
+\end{onlyenv}
+\end{frame}
+
+\begin{frame}[fragile]{Track}
+\only<1>{
+\begin{itemize}
+  \item Purpose
+  	\begin{itemize}
+  		\item Track targets
+  		\item Information sharing
+  	\end{itemize}
+  \item Key implementation points
+  	\begin{itemize}
+  		\item Camera interaction
+  		\item Target present
+  		\item Determin Direction
+  		\item Turn turret 
+	\end{itemize}
+\end{itemize}
+}
+\begin{onlyenv}<2>
+\begin{itemize}
+  \item Key implementation points
+  	\begin{itemize}
+  		\item Camera interaction
+  		\item Target present
+  		\item Determine Direction
+  		\item Turn turret 
+	\end{itemize}
+\end{itemize}
+\begin{center}
+\begin{minipage}[H]{0.9\linewidth}
+\begin{lstlisting}
+while(track){
+	NXTCam_GetBlobs(CAM_PORT, CAM_ADDR, nblobs, bc, bl, bt, br, bb);
+    if(nblobs > 0){
+    	blobInCam = true;
+        ....
+        if(lib_direction != NO_DIRECTION){
+        	tempSpeed = GetSpeed(blobCenter );
+            if(tempSpeed > 0 && lib_direction == RIGHT_DIRECTION)
+            	OnFwd(ROTATE_MOTOR, tempSpeed);
+            else if(tempSpeed < 0 && lib_direction == LEFT_DIRECTION)
+            	OnFwd(ROTATE_MOTOR, tempSpeed);
+        }
+	}else{
+    	blobInCam = false;
+        ...
+    	Off(ROTATE_MOTOR);
+	}
+    DetermineDirection(blobCenter, oldBlobCenter, directionCount);
+}
+\end{lstlisting} 
+\end{minipage}
+\end{center}
+\end{onlyenv}
+\end{frame}
+
+\begin{frame}[fragile]{GetDataAndCalculate}
+\only<1>{
+\begin{itemize}
+  \item Purpose
+  	\begin{itemize}
+  		\item Collect data
+  		\item Calculate vectors and positions
+  		\item Determine the shooting position
+  	\end{itemize}
+	\item Key implementation points
+		\begin{itemize}
+  			\item Busy wait 
+  			\item Make position data
+  			\item Calculate fire position 
+		\end{itemize}
+\end{itemize}
+}
+\begin{onlyenv}<2>
+\begin{itemize}
+	\item Key implementation points
+		\begin{itemize}
+  			\item Busy wait 
+  			\item Make position data
+  			\item Calculate fire position 
+		\end{itemize}
+\end{itemize}
+\begin{center}
+\begin{minipage}[H]{0.9\linewidth}
+\begin{lstlisting}
+while(collecting){
+	if(blobInCam){
+        if(length != NO_DATA){
+            if(MakePosData(length,GetMotorAngle(),CurrentTick(),tempPosData)){
+            	posData[posDataCounter] = tempPosData;
+                posDataCounter++;
+            }
+            if(posDataCounter == DATASETS_NEEDED_TO_CALCULATE){
+				track = false;
+                Off(ROTATE_MOTOR); 
+                StopTask(Track);
+                DirectionVector vector = CalcDirVector(posData,posDataCounter);
+                fire = CalcFireData(CalcFuturePos(vector,MILLISECONDS_TO_HIT));
+                StartTask(WaitAndFire);
+            }
+    	}
+	}
+}
+\end{lstlisting} 
+\end{minipage}
+\end{center}
+\end{onlyenv}
+\end{frame}
+
+\begin{frame}[fragile]{WaitAndFire}
+\only<1>{
+\begin{itemize}
+  \item Purpose
+  	\begin{itemize}
+  		\item Wait until the calculated time
+  		\item Shoot the target at the calculated position
+  		\item Reset the turret
+  	\end{itemize}
+  \item Key implementation points
+  	\begin{itemize}
+  		\item Stop GetDataAndCalculate
+  		\item Load / Rotate and Angle
+  		\item Busy wait to fire
+  		\item Reset / Start tasks 
+	\end{itemize}
+\end{itemize}
+}
+\begin{onlyenv}<2>
+\begin{itemize}
+  \item Key implementation points
+  	\begin{itemize}
+  		\item Stop GetDataAndCalculate
+  		\item Load / Rotate and Angle
+  		\item Busy wait to fire
+  		\item Reset / Start tasks 
+	\end{itemize}
+\end{itemize}
+\begin{center}
+\begin{minipage}[H]{0.9\linewidth}
+\begin{lstlisting}
+collecting = false;
+LoadRound();
+Off(ROTATE_MOTOR);
+RotateH(fire.angleH);
+Angle(fire.angleV);
+while(true){
+	if(CurrentTick() >= fire.timeToHit && !alreadyFired){
+    	alreadyFired = true;
+        Fire();
+        break;
+    }
+}
+Angle(START_ANGLE);
+...
+Wait(4000);
+StartTask(Track);
+StartTask(GetDataAndCalculate);
+\end{lstlisting} 
+\end{minipage}
+\end{center}
+\end{onlyenv}
+\end{frame}

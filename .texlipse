@@ -1,0 +1,14 @@
+#TeXlipse project settings
+#Wed Jun 14 11:08:51 CEST 2017
+markTmpDer=true
+builderNum=2
+outputDir=
+makeIndSty=
+bibrefDir=
+outputFormat=pdf
+tempDir=tmp
+mainTexFile=P6-Eksamen.tex
+outputFile=P6-Eksamen.pdf
+langSpell=en
+markDer=true
+srcDir=
