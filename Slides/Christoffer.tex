@@ -9,6 +9,8 @@
 % \end{itemize}
 % \end{frame}
 
+
+%================================ Intro ============================
 \begin{frame}{Christoffer: Overview}
 \begin{itemize}
   \item Technical Details
@@ -29,215 +31,214 @@
 \end{itemize}
 \end{frame}
 
+%================================ Technical Details ============================
 \subsection{Technical Details}
-\begin{frame}{Technical Details}
-\begin{itemize}
-  \item Main
-  \item Track
-  \item GetDataAndCalculate
-  \item WaitAndFire
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{Main}
+\begin{frame}[fragile]{How was REST implemented}
 \only<1>{
 \begin{itemize}
-  \item Purpose
-  	\begin{itemize}
-  		\item Start tasks
-  		\item Setup
-  	\end{itemize}
-  \item Key implementation points
-  	\begin{itemize}
-  		\item Setup sensors / camera
-  		\item Start tasks
-	\end{itemize}
+  \item Replace old database models usage
+  \item First version of REST vs current version
 \end{itemize}
+
 }
+
 \begin{onlyenv}<2>
 \begin{itemize}
-  \item Key implementation points
-  	\begin{itemize}
-  		\item Setup sensors / camera
-  		\item Start tasks
-	\end{itemize}
+  \item Replace old database models usage
 \end{itemize}
 \begin{center}
 \begin{minipage}[H]{0.9\linewidth}
 \begin{lstlisting}
-PosRegEnable(ROTATE_MOTOR);
-PosRegEnable(ANGLE_MOTOR);
-SetMotorRegulationTime(10);
-NXTCam_Init(CAM_PORT, CAM_ADDR);
-NXTCam_SendCommand(CAM_PORT, CAM_ADDR, 'A'); 
-NXTCam_SendCommand(CAM_PORT, CAM_ADDR, 'E');
-SetSensorUltrasonic(SENSOR_LEFT);
-SetSensorUltrasonic(SENSOR_RIGHT);
-Precedes(Track,GetDataAndCalculate);
-\end{lstlisting} 
-\end{minipage}
-\end{center}
-\end{onlyenv}
-\end{frame}
-
-\begin{frame}[fragile]{Track}
-\only<1>{
-\begin{itemize}
-  \item Purpose
-  	\begin{itemize}
-  		\item Track targets
-  		\item Information sharing
-  	\end{itemize}
-  \item Key implementation points
-  	\begin{itemize}
-  		\item Camera interaction
-  		\item Target present
-  		\item Determin Direction
-  		\item Turn turret 
-	\end{itemize}
-\end{itemize}
-}
-\begin{onlyenv}<2>
-\begin{itemize}
-  \item Key implementation points
-  	\begin{itemize}
-  		\item Camera interaction
-  		\item Target present
-  		\item Determine Direction
-  		\item Turn turret 
-	\end{itemize}
-\end{itemize}
-\begin{center}
-\begin{minipage}[H]{0.9\linewidth}
-\begin{lstlisting}
-while(track){
-	NXTCam_GetBlobs(CAM_PORT, CAM_ADDR, nblobs, bc, bl, bt, br, bb);
-    if(nblobs > 0){
-    	blobInCam = true;
-        ....
-        if(lib_direction != NO_DIRECTION){
-        	tempSpeed = GetSpeed(blobCenter );
-            if(tempSpeed > 0 && lib_direction == RIGHT_DIRECTION)
-            	OnFwd(ROTATE_MOTOR, tempSpeed);
-            else if(tempSpeed < 0 && lib_direction == LEFT_DIRECTION)
-            	OnFwd(ROTATE_MOTOR, tempSpeed);
-        }
-	}else{
-    	blobInCam = false;
-        ...
-    	Off(ROTATE_MOTOR);
-	}
-    DetermineDirection(blobCenter, oldBlobCenter, directionCount);
-}
-\end{lstlisting} 
-\end{minipage}
-\end{center}
-\end{onlyenv}
-\end{frame}
-
-\begin{frame}[fragile]{GetDataAndCalculate}
-\only<1>{
-\begin{itemize}
-  \item Purpose
-  	\begin{itemize}
-  		\item Collect data
-  		\item Calculate vectors and positions
-  		\item Determine the shooting position
-  	\end{itemize}
-	\item Key implementation points
-		\begin{itemize}
-  			\item Busy wait 
-  			\item Make position data
-  			\item Calculate fire position 
-		\end{itemize}
-\end{itemize}
-}
-\begin{onlyenv}<2>
-\begin{itemize}
-	\item Key implementation points
-		\begin{itemize}
-  			\item Busy wait 
-  			\item Make position data
-  			\item Calculate fire position 
-		\end{itemize}
-\end{itemize}
-\begin{center}
-\begin{minipage}[H]{0.9\linewidth}
-\begin{lstlisting}
-while(collecting){
-	if(blobInCam){
-        if(length != NO_DATA){
-            if(MakePosData(length,GetMotorAngle(),CurrentTick(),tempPosData)){
-            	posData[posDataCounter] = tempPosData;
-                posDataCounter++;
-            }
-            if(posDataCounter == DATASETS_NEEDED_TO_CALCULATE){
-				track = false;
-                Off(ROTATE_MOTOR); 
-                StopTask(Track);
-                DirectionVector vector = CalcDirVector(posData,posDataCounter);
-                fire = CalcFireData(CalcFuturePos(vector,MILLISECONDS_TO_HIT));
-                StartTask(WaitAndFire);
-            }
-    	}
-	}
-}
-\end{lstlisting} 
-\end{minipage}
-\end{center}
-\end{onlyenv}
-\end{frame}
-
-\begin{frame}[fragile]{WaitAndFire}
-\only<1>{
-\begin{itemize}
-  \item Purpose
-  	\begin{itemize}
-  		\item Wait until the calculated time
-  		\item Shoot the target at the calculated position
-  		\item Reset the turret
-  	\end{itemize}
-  \item Key implementation points
-  	\begin{itemize}
-  		\item Stop GetDataAndCalculate
-  		\item Load / Rotate and Angle
-  		\item Busy wait to fire
-  		\item Reset / Start tasks 
-	\end{itemize}
-\end{itemize}
-}
-\begin{onlyenv}<2>
-\begin{itemize}
-  \item Key implementation points
-  	\begin{itemize}
-  		\item Stop GetDataAndCalculate
-  		\item Load / Rotate and Angle
-  		\item Busy wait to fire
-  		\item Reset / Start tasks 
-	\end{itemize}
-\end{itemize}
-\begin{center}
-\begin{minipage}[H]{0.9\linewidth}
-\begin{lstlisting}
-collecting = false;
-LoadRound();
-Off(ROTATE_MOTOR);
-RotateH(fire.angleH);
-Angle(fire.angleV);
-while(true){
-	if(CurrentTick() >= fire.timeToHit && !alreadyFired){
-    	alreadyFired = true;
-        Fire();
-        break;
-    }
-}
-Angle(START_ANGLE);
+public LoadApplicationTask(final Context context, final Profile currentUser,
+final Profile guardian, final ViewPager appsViewPager, final View.OnClickListener onClickListener)
 ...
-Wait(4000);
-StartTask(Track);
-StartTask(GetDataAndCalculate);
+currentUser.getRole() != Profile.Roles.CHILD 
+\end{lstlisting} 
+
+to
+
+\begin{lstlisting}    
+public LoadApplicationTask(final Context context, final User currentUser,
+final User guardian, final ViewPager appsViewPager, final View.OnClickListener onClickListener)
+...
+!currentUser.hasPermission(PermissionType.User)
 \end{lstlisting} 
 \end{minipage}
 \end{center}
 \end{onlyenv}
+
+\begin{onlyenv}<3>
+\begin{center}
+\begin{minipage}[H]{0.9\linewidth}
+\begin{lstlisting}
+LoginRequest loginRequest = new LoginRequest(user, new Response.Listener<Integer>() {
+	@Override
+    public void onResponse(Integer statusCode) {
+    	...            
+    }            
+}, new Response.ErrorListener() {
+    @Override
+    public void onErrorResponse(VolleyError error) {
+    	...
+    }
+});
+queue.add(loginRequest);
+\end{lstlisting} 
+\begin{lstlisting}    
+handler.login(user, new Response.Listener<Integer>() {
+	@Override
+    public void onResponse(Integer response) {
+    	...
+    }
+}, new Response.ErrorListener() {
+    @Override
+    public void onErrorResponse(VolleyError error) {
+    	... 
+    }
+});
+\end{lstlisting} 
+\end{minipage}
+\end{center}
+\end{onlyenv}
+\end{frame}
+
+\begin{frame}[fragile]{REST implementation issues}
+\only<1,4>{
+\begin{itemize}
+  \item Asynchronous issues
+  \item Often changes
+  \item Mismatch between client lib and server 
+\end{itemize}
+}
+
+\only<2>{
+\begin{itemize}
+  \item Often changes
+  \begin{itemize}
+  	\item Parameter changes
+  	\item Request changes
+  \end{itemize}
+\end{itemize}
+}
+\begin{onlyenv}<3>
+\begin{center}
+\begin{minipage}[H]{0.9\linewidth}
+\begin{lstlisting}    
+PutRequest<User> userPutRequest = new PutRequest<User>(currentUser, new Response.Listener<User>() {
+	@Override
+    public void onResponse(User response) {
+    	...
+    }
+}, new Response.ErrorListener() {
+    @Override
+    public void onErrorResponse(VolleyError error) {
+		...
+    }
+});
+queue.add(userPutRequest);
+\end{lstlisting} 
+\begin{lstlisting}
+handler.resourceRequest(currentUser.getSettings(), new Response.Listener<Settings>() {
+	@Override
+	public void onResponse(Settings response) {
+		...	
+	}
+}, new Response.ErrorListener() {
+	@Override
+    public void onErrorResponse(VolleyError error) {
+    	...
+    }
+});
+\end{lstlisting} 
+\end{minipage}
+\end{center}
+\end{onlyenv}
+\end{frame}
+
+
+\begin{frame}{Asynchronous requests}
+\begin{itemize}
+  \item What is the issues?
+  \item What was the big problem?
+  \item What caused it?
+  \item How was it fixed?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Request chaining}
+\only<1,3>{
+\begin{itemize}
+  \item Why do we use them?
+  \item How do they look?
+  \item Problems with them?
+  \item Are they even necessary?
+\end{itemize}
+}
+\begin{onlyenv}<2>
+\begin{center}
+\begin{minipage}[H]{0.9\linewidth}
+\begin{lstlisting}    
+handler.get(User.class, new Response.Listener<User>() {
+	@Override
+    public void onResponse(User response) {
+    	... 
+    }
+}, new Response.ErrorListener() {
+	@Override
+    public void onErrorResponse(VolleyError error) {
+    	handler.login(user, new Response.Listener<Integer>() {
+        	@Override
+            public void onResponse(Integer response) {
+            	handler.get(User.class, new Response.Listener<User>() {
+                	@Override
+                    public void onResponse(User response) {
+                    	... //same code as the other ...
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+						...
+                    }
+                });
+            }
+        });
+});
+\end{lstlisting} 
+\end{minipage}
+\end{center}
+\end{onlyenv}
+\end{frame}
+
+
+\begin{frame}{Settings issue}
+\begin{itemize}
+  \item What is the issue?
+  \item What we have done?
+\end{itemize}
+\end{frame}
+
+%================================ Future Work ============================
+\subsection{Future Work}
+\begin{frame}{Activity controllers}
+\begin{itemize}
+  \item What is their pupose?
+  \item Why did we do it?
+  \item What is missing?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{General Component lib \& Launcher}
+\begin{itemize}
+  \item What should be worked on next year?
+  \item What should be fixed?
+  \item What should be redone?
+\end{itemize}
+\end{frame}
+
+%================================ Showcase program ============================
+\subsection{Showcase}
+\begin{frame}{Showcase}
+\begin{itemize}
+  \item Show the Launcher in action
+\end{itemize}
 \end{frame}
