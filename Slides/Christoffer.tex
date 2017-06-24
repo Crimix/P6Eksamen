@@ -19,12 +19,7 @@
   			\item The impact of the REST implementation
   			\item Asynchronous requests and the problems they cause
   			\item Request chaining
-  			\item The settings problem	  
-		\end{itemize}
-  \item Future work
-  		\begin{itemize}
   			\item Activity controllers
-  			\item General Component lib \& Launcher 
 		\end{itemize}
   \item Showcase the Launcher
 \end{itemize}
@@ -102,24 +97,19 @@ handler.login(user, new Response.Listener<Integer>() {
 \end{frame}
 
 \begin{frame}[fragile]{REST implementation issues}
-\only<1,4>{
+\only<1,3>{
 \begin{itemize}
   \item Asynchronous issues
   \item Often changes
+  \begin{enumerate}
+  \item Parameter changes
+  	\item Request changes
+\end{enumerate}
   \item Mismatch between client lib and server 
 \end{itemize}
 }
 
-\only<2>{
-\begin{itemize}
-  \item Often changes
-  \begin{itemize}
-  	\item Parameter changes
-  	\item Request changes
-  \end{itemize}
-\end{itemize}
-}
-\begin{onlyenv}<3>
+\begin{onlyenv}<2>
 \begin{center}
 \begin{minipage}[H]{0.9\linewidth}
 \begin{lstlisting}    
@@ -208,29 +198,11 @@ handler.get(User.class, new Response.Listener<User>() {
 \end{onlyenv}
 \end{frame}
 
-
-\begin{frame}{Settings issue}
-\begin{itemize}
-  \item What is the issue?
-  \item What we have done?
-\end{itemize}
-\end{frame}
-
-%================================ Future Work ============================
-\subsection{Future Work}
 \begin{frame}{Activity controllers}
 \begin{itemize}
   \item What is their purpose?
   \item Why did we do it?
   \item What is missing?
-\end{itemize}
-\end{frame}
-
-\begin{frame}{General Component lib \& Launcher}
-\begin{itemize}
-  \item What should be worked on next year?
-  \item What should be fixed?
-  \item What should be redone?
 \end{itemize}
 \end{frame}
 
