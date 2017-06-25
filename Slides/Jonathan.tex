@@ -37,19 +37,43 @@ Based on the requirements for the users we created this diagram:
 
 \end{frame}
 
-\subsection{REST Collaboration}
-\begin{frame}{REST Collaboration}
-A Collaboration between SW609, SW610, SW613 and SW614.\nl
+\subsection{REST Architectural Design}
+\begin{frame}{REST Architectural Design}
+A Collaboration between SW609, SW610, SW613 and SW615.\nl
 
-
+\textbf{skal nok rettes lidt til}
+The old client/server has serious problems, therefore make a new using the REpresentational State Transfer (REST) model which has the following requirements:
 \begin{itemize}
-\item 
-
-
+\item Client-Server: Seperate the user interface from data storage and manipulation.
+\item Stateless: Each request to the server returns a response which contains all information required for the client to service the request.
+\item Cacheable: Responses from the server must implicitly or explicitly declare themselves as either cacheable or not, in order to prevent the client from reusing expired data.
+\item Layered System: The client is incapable of determining if it is connected to the main server or an affiliated intermediate entry point.
+\item Uniform Interface: The retrieved data is conceptually different from the representation used on the server. Given a set of data, the client should have enough information to edit and delete the respective information of the server.
 \end{itemize}
 \end{frame}
 
+\begin{frame}{REST Architectural Design}
+\includegraphics[scale=0.5]{figures/Giraf_RestModelV3.PNG}
+\end{frame}
 
+\begin{frame}{REST Architectural Design}
+
+\textbf{WIP}
+We use 3 different types of requests:
+\begin{itemize}
+\item LoginRequest
+\item GetRequest
+\item PutRequest
+\end{itemize}
+
+We also implement VOLLEY which means it is not easy to requests neat.
+
+What is a Request and how do we use it? (hint: RequestQueue and Handler)
+\end{frame}
+
+\begin{frame}{REST Architectural Design}
+Add a couple of example requests.
+\end{frame}
 
 % \subsection{Network Structure}
 % \begin{frame}{Network Structure}
