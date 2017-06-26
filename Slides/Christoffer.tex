@@ -31,6 +31,9 @@
 \only<1>{
 \begin{itemize}
   \item Replace old database models usage
+  \begin{itemize}
+  \item DB\_lib to REST models
+\end{itemize}
   \item First version of REST vs current version
 \end{itemize}
 
@@ -39,6 +42,9 @@
 \begin{onlyenv}<2>
 \begin{itemize}
   \item Replace old database models usage
+    \begin{itemize}
+  \item DB\_lib to REST models
+\end{itemize}
 \end{itemize}
 \begin{center}
 \begin{minipage}[H]{0.9\linewidth}
@@ -106,6 +112,9 @@ handler.login(user, new Response.Listener<Integer>() {
   	\item Request changes
 \end{enumerate}
   \item Mismatch between client lib and server 
+  \begin{itemize}
+  \item Different class / variable names
+\end{itemize}
 \end{itemize}
 }
 
@@ -148,9 +157,18 @@ handler.resourceRequest(currentUser.getSettings(), new Response.Listener<Setting
 \begin{frame}{Asynchronous requests}
 \begin{itemize}
   \item What is the issues?
+  \begin{itemize}
+  \item Code made for synchronous system 
+\end{itemize}
   \item What was the big problem?
-  \item What caused it?
-  \item How was it fixed?
+  \begin{itemize}
+  \item GirafFragment, AndroidFragment
+  \item Adapter
+\end{itemize}
+  \item What caused it and how was it fixed?
+  \begin{itemize}
+  \item ReloadApplications method call
+\end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -158,8 +176,15 @@ handler.resourceRequest(currentUser.getSettings(), new Response.Listener<Setting
 \only<1,3>{
 \begin{itemize}
   \item Why do we use them?
+  \begin{itemize}
+  \item Control execution order 
+\end{itemize}
   \item How do they look?
   \item Problems with them?
+  \begin{itemize}
+  \item Many lines of code
+  \item Less readable
+\end{itemize}
   \item Are they even necessary?
 \end{itemize}
 }
@@ -201,7 +226,14 @@ handler.get(User.class, new Response.Listener<User>() {
 \begin{frame}{Activity controllers}
 \begin{itemize}
   \item What is their purpose?
+  \begin{itemize}
+  \item Split UI and logic
+\end{itemize}
   \item Why did we do it?
+  \begin{itemize}
+  \item Make code more readable
+  \item Better divide the activities
+\end{itemize}
   \item What is missing?
 \end{itemize}
 \end{frame}
