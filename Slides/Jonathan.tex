@@ -72,8 +72,21 @@ Add a couple of example requests.
 
 \begin{minipage}[H]{0.9\linewidth}
 \begin{lstlisting}
-
-
+LoginRequest loginRequest = new LoginRequest(username, password,new Response.Listener<Integer>() 
+{
+  @Override
+  public void onResponse(Integer statusCode) {
+    //Usually a GetRequest
+    ...
+  }, 
+  new Response.ErrorListener() {
+	  @Override
+    public void onErrorResponse(VolleyError error) {
+    	//Show error message
+    	...
+    }
+});
+queue.add(loginRequest);
 
 \end{lstlisting}
 \end{minipage}
