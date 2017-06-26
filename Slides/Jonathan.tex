@@ -39,11 +39,11 @@ A Collaboration between SW609, SW610, SW613 and SW615.\\
 
 The old client/server has serious problems, therefore make a new using the REpresentational State Transfer (REST) model which has the following requirements:
 \begin{itemize}
-\item Client-Server
-\item Stateless
-\item Cacheable
-\item Layered System
-\item Uniform Interface
+\item Client-Server: Seperate the user interface from data storage and manipulation.
+\item Stateless: Requests to the server must return a response with all the needed information.
+\item Cacheable: Prevent reuse of expired data.
+\item Layered System: Client is incapable of determining where it is connected to.
+\item Uniform Interface: Given a set of data the client should have enough information to edit or delete respective data on the server.
 \end{itemize}
 \end{frame}
 
@@ -61,6 +61,9 @@ We use 3 different types of requests:
 \end{itemize}
 
 What is a Request and how do we use it?
+\begin{itemize}
+\item We use a RequestQueue and a RequestHandler so we do not need to consider the details.
+\end{itemize}
 
 \end{frame}
 
