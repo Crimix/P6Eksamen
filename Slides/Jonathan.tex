@@ -2,8 +2,9 @@
 \subsection{Overview}
 \begin{frame}{Jonathan: Overview}
 \begin{itemize}
-\item Collaborations
-\item New Stuff
+\item GUI Requirements Analysis
+\item REST Architecture Design
+\item New Stuff?
 \end{itemize}
 \end{frame}
 
@@ -31,27 +32,26 @@ A couple of the more noteworthy requirements:
 \item There should be an institute type user.
 \end{itemize}
 
-Based on the requirements for the users we created this diagram:
-\includegraphics[scale=0.5]{figures/LoginDiagram.PNG}
+%Based on the requirements for the users we created this diagram:
+%\includegraphics[scale=0.5]{figures/LoginDiagram.PNG}
 \end{frame}
 
 \subsection{REST Architectural Design}
 \begin{frame}{REST Architectural Design}
 A Collaboration between SW609, SW610, SW613 and SW615.\\
 
-\textbf{skal nok rettes lidt til}
 The old client/server has serious problems, therefore make a new using the REpresentational State Transfer (REST) model which has the following requirements:
 \begin{itemize}
-\item Client-Server: Seperate the user interface from data storage and manipulation.
-\item Stateless: Each request to the server returns a response which contains all information required for the client to service the request.
-\item Cacheable: Responses from the server must implicitly or explicitly declare themselves as either cacheable or not, in order to prevent the client from reusing expired data.
-\item Layered System: The client is incapable of determining if it is connected to the main server or an affiliated intermediate entry point.
-\item Uniform Interface: The retrieved data is conceptually different from the representation used on the server. Given a set of data, the client should have enough information to edit and delete the respective information of the server.
+\item Client-Server
+\item Stateless
+\item Cacheable
+\item Layered System
+\item Uniform Interface
 \end{itemize}
 \end{frame}
 
 \begin{frame}{REST Architectural Design}
-\includegraphics[scale=0.5]{figures/Giraf_RestModelV3.PNG}
+\includegraphics[scale=0.3]{figures/Giraf_RestModelV3.PNG}
 \end{frame}
 
 \begin{frame}{REST Architectural Design}
@@ -64,8 +64,7 @@ We use 3 different types of requests:
 \item PutRequest
 \end{itemize}
 
-We also implement VOLLEY which means it is not easy to requests neat.
-
+We also implement VOLLEY which means it is not easy to requests neat.\\
 What is a Request and how do we use it? (hint: RequestQueue and Handler)
 \end{frame}
 
