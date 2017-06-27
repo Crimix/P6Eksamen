@@ -36,7 +36,7 @@ A couple of the more noteworthy requirements:
 \begin{frame}{REST Architectural Design}
 A Collaboration between SW609, SW610, SW613 and SW615.\\
 
-The old server has serious problems, therefore make a new using the REpresentational State Transfer (REST) model which has the following requirements:
+The old server has serious problems, therefore make a new using the \textbf{RE}presentational \textbf{S}tate \textbf{T}ransfer (\textbf{REST}) model which has the following requirements:
 \begin{itemize}
 \item Client-Server: Seperate the user interface from data storage and manipulation.
 \item Stateless: Requests to the server must return a response with all the needed information.
@@ -67,28 +67,29 @@ What is a Request and how do we use it?
 \end{frame}
 
 \begin{frame}[fragile]{REST Architectural Design}
-Add a couple of example requests.
-
+\begin{center}
 \begin{minipage}[H]{0.9\linewidth}
 \begin{lstlisting}
 LoginRequest loginRequest = new LoginRequest(username, password,new Response.Listener<Integer>() 
 {
   @Override
   public void onResponse(Integer statusCode) {
-    //Usually a GetRequest
+    Usually a GetRequest
     ...
   }, 
   new Response.ErrorListener() {
 	  @Override
     public void onErrorResponse(VolleyError error) {
-    	//Show error message
-    	...
+      Show error message
+      ...
     }
+  }
 });
 queue.add(loginRequest);
 
 \end{lstlisting}
 \end{minipage}
+\end{center}
 \end{frame}
 
 % \subsection{Network Structure}
