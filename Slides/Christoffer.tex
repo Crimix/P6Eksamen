@@ -155,6 +155,7 @@ handler.resourceRequest(currentUser.getSettings(), new Response.Listener<Setting
 
 
 \begin{frame}{Asynchronous requests}
+\only<1>{
 \begin{itemize}
   \item What is the issues?
   \begin{itemize}
@@ -170,6 +171,21 @@ handler.resourceRequest(currentUser.getSettings(), new Response.Listener<Setting
   \item ReloadApplications method call
 \end{itemize}
 \end{itemize}
+}
+
+\begin{onlyenv}<2>
+\begin{itemize}
+  \item What caused it and how was it fixed?
+  \begin{itemize}
+  \item ReloadApplications method call
+\end{itemize}
+\end{itemize}
+\begin{center}
+\begin{minipage}[H]{0.9\linewidth}
+\includegraphics[scale=0.45]{figures/DonDiagram.png} 
+\end{minipage}
+\end{center}
+\end{onlyenv}
 \end{frame}
 
 \begin{frame}[fragile]{Request chaining}
